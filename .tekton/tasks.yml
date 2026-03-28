@@ -1,23 +1,25 @@
 apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
-  name: jest-test
+  name: cleanup
 spec:
   steps:
-    - name: install-and-test
-      image: node:18
+    - name: remove-temp
+      image: alpine
       script: |
-        npm install
-        npm test
+        echo "Cleaning workspace..."
+        rm -rf /workspace/*
+
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
-  name: cleanup
+  name: run-tests
 spec:
   steps:
-    - name: cleanup-step
-      image: alpine
+    - name: test
+      image: node:14
       script: |
-        echo "Cleaning workspace"
-        rm -rf node_modules
+        echo "Running tests..."
+        npm install
+        npm test
